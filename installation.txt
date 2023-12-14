@@ -8,11 +8,24 @@ conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvi
 pip install -r requirements.txt
 
 # Reinstall xformers for cuda 11.8 support
-conda install triton
+conda install triton # Only on linux
+
 pip install -U xformers --index-url https://download.pytorch.org/whl/cu118
 
-# Launch Original MVDream text-image model
+cd ./custom
+git clone https://github.com/murlock1000/threestudio-mvdream-inpainting.git
+cd .\threestudio-mvdream-inpainting\
+pip install -r requirements.txt
+cd ../../
+
+# Download instructNerf2Nerf data and extract into data/face
+https://mailstsinghuaeducn-my.sharepoint.com/personal/shaorz20_mails_tsinghua_edu_cn/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fshaorz20%5Fmails%5Ftsinghua%5Fedu%5Fcn%2FDocuments%2FControl4D%2Fface%2Ezip&parent=%2Fpersonal%2Fshaorz20%5Fmails%5Ftsinghua%5Fedu%5Fcn%2FDocuments%2FControl4D&ga=1
+
+# Launch Dreamfusion to test threestudio installation
 python launch.py --config configs/dreamfusion-sd.yaml --train --gpu 0 system.prompt_processor.prompt="a zoomed out DSLR photo of a baby bunny sitting on top of a stack of pancakes"
 
-# Launch image-conditioned MVDream model
+# Launch Original MVDream text-image model 
 python launch.py --config custom/threestudio-mvdream-inpainting/configs/mvdream-sd21.yaml --train --gpu 0 system.prompt_processor.prompt="an astronaut riding a horse"
+
+# Launch image-conditioned MVDream model
+python launch.py --config custom/threestudio-mvdream-inpainting/configs/mvdream-sd21-inpaint.yaml --train --gpu 0 system.prompt_processor.prompt="Male face with stubble and long hair" data.dataroot="data/face"
