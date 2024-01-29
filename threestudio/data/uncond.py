@@ -23,6 +23,11 @@ from threestudio.utils.ops import (
 )
 from threestudio.utils.typing import *
 
+c2w_test = []
+
+def write_c2w():
+    global c2w_test
+    torch.save(c2w_test, 'c2w_quadruplets_validate.pt')
 
 @dataclass
 class RandomCameraDataModuleConfig:
@@ -461,9 +466,11 @@ class RandomCameraDataset(Dataset):
             "proj_mtx": self.proj_mtx[index],
         }
 
-    def collate(self, batch):
+    def collate(self, batch): 
         batch = torch.utils.data.default_collate(batch)
         batch.update({"height": self.cfg.eval_height, "width": self.cfg.eval_width})
+       # global c2w_test
+        #c2w_test.append(batch["c2w"])
         return batch
 
 
